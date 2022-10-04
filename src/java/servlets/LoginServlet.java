@@ -28,12 +28,11 @@ public class LoginServlet extends HttpServlet {
             if (logout != null) {
                 request.setAttribute("message", "You have successfully logged out.");
                 session.invalidate();
-                session = request.getSession();
+                session = request.getSession(); // generates new session
             } else {
                 response.sendRedirect("home");
                 return;
             }
-
         }
 
         getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
@@ -48,16 +47,17 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         if (username == null || password == null) {
-            request.setAttribute("message", "Please do not empty the field.");
+            request.setAttribute("message", "Invalid");
         } else {
             AccountService userAccount = new AccountService();
-            User user = userAccount.login(username, password);
-
+            User user = userAccount.login(username, password);  // validates user credidentials
+            // returns username if information is correct
             if (user != null) {
                 HttpSession session = request.getSession();
                 session.setAttribute("username", username);
-                response.sendRedirect("home");
+                response.sendRedirect("home");  // redirect to home page
                 return;
+            // otherwise prompt message to notice user
             } else {
                 request.setAttribute("username", username);
                 request.setAttribute("password", password);
